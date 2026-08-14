@@ -11,6 +11,6 @@ export type ChatTone = "normal" | "friendly" | "critic";
 export interface ChatClient {
   sendMessage(
     messages: ChatMessage[],
-    options?: { tone?: ChatTone; context?: string }
+    options?: { tone?: ChatTone; context?: string; temperature?: number }
   ): Promise<string>;
 }

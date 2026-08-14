@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import MovieCard from "@/components/MovieCard";
 import SortControl from "@/components/SortControl";
+import { parseKeywordSummary } from "@/lib/summary";
 
 const SORT_FIELDS = ["watchedDate", "rating", "title"] as const;
 type SortField = (typeof SORT_FIELDS)[number];
@@ -22,6 +23,12 @@ export default async function Home({
   const { sort } = await searchParams;
   const movies = await prisma.movie.findMany({
     orderBy: parseSort(sort),
+    include: {
+      summaries: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
   });
 
   return (
@@ -51,6 +58,7 @@ export default async function Home({
               posterPath={movie.posterPath}
               watchedDate={movie.watchedDate}
               rating={movie.rating}
+              keywords={parseKeywordSummary(movie.summaries[0]?.summaryText ?? "")?.keywords ?? []}
             />
           ))}
         </div>

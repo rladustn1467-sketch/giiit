@@ -20,7 +20,7 @@ export class OllamaChatClient implements ChatClient {
 
   async sendMessage(
     messages: ChatMessage[],
-    options?: { tone?: ChatTone; context?: string }
+    options?: { tone?: ChatTone; context?: string; temperature?: number }
   ): Promise<string> {
     const tone = options?.tone ?? "normal";
     const systemContent = options?.context
@@ -36,6 +36,9 @@ export class OllamaChatClient implements ChatClient {
         messages: [systemMessage, ...messages],
         stream: false,
         think: false,
+        ...(options?.temperature != null
+          ? { options: { temperature: options.temperature } }
+          : {}),
       }),
     });
 

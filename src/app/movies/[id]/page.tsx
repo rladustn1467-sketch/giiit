@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { TMDB_IMAGE_BASE_URL } from "@/lib/tmdb";
 import MovieChat from "@/components/MovieChat";
+import RegenerateSummaryButton from "@/components/RegenerateSummaryButton";
+import ReviewEditor from "@/components/ReviewEditor";
 
 export default async function MovieDetailPage({
   params,
@@ -46,19 +48,20 @@ export default async function MovieDetailPage({
         </div>
       </div>
 
-      {movie.review && (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-semibold text-neutral-300">감상평</h2>
-          <p className="text-sm whitespace-pre-wrap">{movie.review}</p>
-        </section>
-      )}
+      <section className="flex flex-col gap-2">
+        <h2 className="text-sm font-semibold text-neutral-300">감상평</h2>
+        <ReviewEditor movieId={movie.id} initialRating={movie.rating} initialReview={movie.review} />
+      </section>
 
       <section className="flex flex-col gap-3 border-t border-neutral-800 pt-6">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-neutral-300">AI 대화</h2>
-          <Link href={`/movies/${movie.id}/summary`} className="text-xs text-neutral-400 underline">
-            대화 요약 보기
-          </Link>
+          <div className="flex items-center gap-3">
+            <RegenerateSummaryButton movieId={movie.id} />
+            <Link href={`/movies/${movie.id}/summary`} className="text-xs text-neutral-400 underline">
+              대화 요약 보기
+            </Link>
+          </div>
         </div>
         <MovieChat movieId={movie.id} />
       </section>

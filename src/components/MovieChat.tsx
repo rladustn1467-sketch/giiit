@@ -25,6 +25,7 @@ export default function MovieChat({ movieId }: { movieId: number }) {
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const initStartedRef = useRef(false);
+  const summarizedRef = useRef(false);
 
   useEffect(() => {
     if (initStartedRef.current) return;
@@ -63,6 +64,16 @@ export default function MovieChat({ movieId }: { movieId: number }) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
+
+  // 채팅 화면을 벗어날 때(언마운트) 한 번만 자동 요약을 요청한다.
+  // 대화/감상평 유무에 따른 요약 가능 여부 판단은 서버가 처리한다.
+  useEffect(() => {
+    return () => {
+      if (summarizedRef.current) return;
+      summarizedRef.current = true;
+      fetch(`/api/movies/${movieId}/auto-summary`, { method: "POST" }).catch(() => {});
+    };
+  }, [movieId]);
 
   async function handleSend() {
     const content = input.trim();

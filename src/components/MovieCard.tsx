@@ -8,9 +8,17 @@ type MovieCardProps = {
   posterPath: string | null;
   watchedDate: Date;
   rating: number | null;
+  keywords?: string[];
 };
 
-export default function MovieCard({ id, title, posterPath, watchedDate, rating }: MovieCardProps) {
+export default function MovieCard({
+  id,
+  title,
+  posterPath,
+  watchedDate,
+  rating,
+  keywords = [],
+}: MovieCardProps) {
   return (
     <Link
       href={`/movies/${id}`}
@@ -37,6 +45,18 @@ export default function MovieCard({ id, title, posterPath, watchedDate, rating }
           <span>{watchedDate.toLocaleDateString("ko-KR")}</span>
           {rating != null && <span>⭐ {rating}</span>}
         </div>
+        {keywords.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {keywords.map((keyword) => (
+              <span
+                key={keyword}
+                className="text-[11px] leading-none px-1.5 py-1 rounded-full bg-neutral-800 text-neutral-300 truncate max-w-full"
+              >
+                #{keyword}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </Link>
   );
