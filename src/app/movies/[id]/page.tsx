@@ -1,0 +1,67 @@
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { TMDB_IMAGE_BASE_URL } from "@/lib/tmdb";
+import MovieChat from "@/components/MovieChat";
+
+export default async function MovieDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const movie = await prisma.movie.findUnique({ where: { id: Number(id) } });
+
+  if (!movie) {
+    notFound();
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex gap-4 sm:gap-6">
+        {movie.posterPath ? (
+          <Image
+            src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
+            alt={movie.title}
+            width={140}
+            height={210}
+            className="rounded-md object-cover shrink-0"
+          />
+        ) : (
+          <div className="w-[140px] h-[210px] bg-neutral-900 rounded-md flex items-center justify-center text-xs text-neutral-600 shrink-0">
+            포스터 없음
+          </div>
+        )}
+
+        <div className="flex flex-col gap-2 min-w-0">
+          <h1 className="text-xl font-semibold">{movie.title}</h1>
+          <p className="text-sm text-neutral-400">
+            감상일 {movie.watchedDate.toLocaleDateString("ko-KR")}
+            {movie.rating != null && ` · ⭐ ${movie.rating}`}
+          </p>
+          {movie.overview && (
+            <p className="text-sm text-neutral-400 mt-2">{movie.overview}</p>
+          )}
+        </div>
+      </div>
+
+      {movie.review && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-neutral-300">감상평</h2>
+          <p className="text-sm whitespace-pre-wrap">{movie.review}</p>
+        </section>
+      )}
+
+      <section className="flex flex-col gap-3 border-t border-neutral-800 pt-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-neutral-300">AI 대화</h2>
+          <Link href={`/movies/${movie.id}/summary`} className="text-xs text-neutral-400 underline">
+            대화 요약 보기
+          </Link>
+        </div>
+        <MovieChat movieId={movie.id} />
+      </section>
+    </div>
+  );
+}

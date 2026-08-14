@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Movie {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @default(1) @map("user_id")
+  tmdbId      Int      @map("tmdb_id")
+  title       String
+  posterPath  String?  @map("poster_path")
+  overview    String?
+  watchedDate DateTime @map("watched_date")
+  rating      Float?
+  review      String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  conversations Conversation[]
+  summaries     Summary[]
+  folderMovies  FolderMovie[]
+
+  @@map("movies")
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  movieId   Int      @map("movie_id")
+  role      String // "user" | "assistant"
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@map("conversations")
+}
+
+model Summary {
+  id          Int      @id @default(autoincrement())
+  movieId     Int      @map("movie_id")
+  summaryText String   @map("summary_text")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@map("summaries")
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @default(1) @map("user_id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  folderMovies FolderMovie[]
+
+  @@map("folders")
+}
+
+model FolderMovie {
+  folderId Int @map("folder_id")
+  movieId  Int @map("movie_id")
+
+  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  movie  Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@id([folderId, movieId])
+  @@map("folder_movies")
+}
