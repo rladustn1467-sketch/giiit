@@ -35,12 +35,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="font-semibold tracking-tight">
               🎬 영화 감상 기록
             </Link>
-            <Link
-              href="/movies/new"
-              className="text-sm px-3 py-1.5 rounded-md bg-neutral-100 text-neutral-900 hover:bg-white transition-colors"
-            >
-              영화 등록
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/library"
+                className="text-sm text-neutral-300 hover:text-neutral-100 transition-colors"
+              >
+                라이브러리
+              </Link>
+              <Link
+                href="/movies/new"
+                className="text-sm px-3 py-1.5 rounded-md bg-neutral-100 text-neutral-900 hover:bg-white transition-colors"
+              >
+                영화 등록
+              </Link>
+            </div>
           </nav>
         </header>
         <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6">

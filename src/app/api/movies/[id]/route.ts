@@ -46,3 +46,20 @@ export async function PATCH(
 
   return NextResponse.json({ movie });
 }
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const movieId = Number(id);
+
+  const existing = await prisma.movie.findUnique({ where: { id: movieId } });
+  if (!existing) {
+    return NextResponse.json({ error: "영화를 찾을 수 없습니다." }, { status: 404 });
+  }
+
+  await prisma.movie.delete({ where: { id: movieId } });
+
+  return NextResponse.json({ ok: true });
+}
