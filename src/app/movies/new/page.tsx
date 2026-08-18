@@ -161,7 +161,11 @@ export default function NewMoviePage() {
             disabled={submitting}
             className="bg-neutral-100 text-neutral-900 rounded-md px-4 py-2 font-medium disabled:opacity-50"
           >
-            {submitting ? "등록 중..." : "등록하기"}
+            {submitting
+              ? review
+                ? "등록 중... (감상평 요약도 같이 만드는 중이라 최대 1분 정도 걸려요)"
+                : "등록 중..."
+              : "등록하기"}
           </button>
         </form>
       </div>

@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { getChatClient } from "@/lib/ai/chatClient";
 import type { ChatMessage, ChatTone } from "@/lib/ai/chatClient";
 
+// Ollama 응답이 느릴 수 있어 서버리스 함수 제한 시간을 최대로 요청한다 (Vercel Hobby 상한 60초).
+export const maxDuration = 60;
+
 type MovieForContext = {
   title: string;
   watchedDate: Date;

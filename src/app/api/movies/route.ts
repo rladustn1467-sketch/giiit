@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { generateAutoSummary } from "@/lib/autoSummary";
+
+// 감상평 입력 시 등록과 함께 요약(키워드)도 생성한다. Ollama 응답이 느릴 수 있어
+// 서버리스 함수 제한 시간을 최대로 요청한다 (Vercel Hobby 상한 60초).
+export const maxDuration = 60;
 
 const SORT_FIELDS = ["watchedDate", "rating", "title", "createdAt"] as const;
 type SortField = (typeof SORT_FIELDS)[number];
@@ -47,6 +52,12 @@ export async function POST(request: NextRequest) {
       review: review ?? null,
     },
   });
+
+  try {
+    await generateAutoSummary(movie.id);
+  } catch {
+    // 요약 생성 실패가 영화 등록 자체를 막지는 않는다.
+  }
 
   return NextResponse.json({ movie }, { status: 201 });
 }

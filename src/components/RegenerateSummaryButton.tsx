@@ -17,10 +17,13 @@ export default function RegenerateSummaryButton({ movieId }: { movieId: number }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ force: true }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "요약을 다시 만들지 못했어요.");
+      }
       router.refresh();
-    } catch {
-      setError("요약을 다시 만들지 못했어요.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "요약을 다시 만들지 못했어요.");
     } finally {
       setLoading(false);
     }
