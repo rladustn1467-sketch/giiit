@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { TMDB_IMAGE_BASE_URL } from "@/lib/tmdb";
+import { TMDB_IMAGE_BASE_URL, getMovieDetails } from "@/lib/tmdb";
 import MovieChat from "@/components/MovieChat";
 import RegenerateSummaryButton from "@/components/RegenerateSummaryButton";
 import ReviewEditor from "@/components/ReviewEditor";
@@ -19,6 +19,8 @@ export default async function MovieDetailPage({
   if (!movie) {
     notFound();
   }
+
+  const tmdbDetails = await getMovieDetails(movie.tmdbId);
 
   return (
     <div className="flex flex-col gap-8">
@@ -39,13 +41,21 @@ export default async function MovieDetailPage({
 
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-xl font-semibold">{movie.title}</h1>
+            <h1 className="text-xl font-semibold">
+              {movie.title}
+              {tmdbDetails?.releaseYear && (
+                <span className="text-neutral-500 font-normal"> ({tmdbDetails.releaseYear})</span>
+              )}
+            </h1>
             <DeleteMovieButton movieId={movie.id} />
           </div>
           <p className="text-sm text-neutral-400">
             감상일 {movie.watchedDate.toLocaleDateString("ko-KR")}
             {movie.rating != null && ` · ⭐ ${movie.rating}`}
           </p>
+          {tmdbDetails && tmdbDetails.cast.length > 0 && (
+            <p className="text-sm text-neutral-400">출연: {tmdbDetails.cast.join(", ")}</p>
+          )}
           {movie.overview && (
             <p className="text-sm text-neutral-400 mt-2">{movie.overview}</p>
           )}

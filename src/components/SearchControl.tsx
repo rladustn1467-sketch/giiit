@@ -1,42 +1,66 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-export default function SearchControl() {
+// targetPath를 지정하지 않으면 현재 페이지(pathname)에서 검색한다.
+// 랜딩 페이지처럼 다른 페이지의 검색 결과로 보내고 싶을 때만 지정한다 (예: "/movies").
+export default function SearchControl({ targetPath }: { targetPath?: string } = {}) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [value, setValue] = useState(searchParams.get("q") ?? "");
+  const destination = targetPath ?? pathname;
+  const [value, setValue] = useState(destination === pathname ? searchParams.get("q") ?? "" : "");
 
   useEffect(() => {
-    setValue(searchParams.get("q") ?? "");
-  }, [searchParams]);
+    if (destination === pathname) {
+      setValue(searchParams.get("q") ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, destination, pathname]);
+
+  function navigate(nextValue: string) {
+    const params = new URLSearchParams(destination === pathname ? searchParams.toString() : "");
+    if (nextValue) {
+      params.set("q", nextValue);
+    } else {
+      params.delete("q");
+    }
+    const query = params.toString();
+    router.push(query ? `${destination}?${query}` : destination);
+  }
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const current = searchParams.get("q") ?? "";
+      const current = destination === pathname ? searchParams.get("q") ?? "" : "";
       if (value === current) return;
-
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set("q", value);
-      } else {
-        params.delete("q");
-      }
-      router.push(`/?${params.toString()}`);
+      navigate(value);
     }, 300);
 
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    navigate(value);
+  }
+
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
-      placeholder="제목으로 검색"
-      className="bg-neutral-900 border border-neutral-700 rounded-md text-sm px-3 py-1.5 text-neutral-100 placeholder:text-neutral-500 w-full sm:w-56"
-    />
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full sm:w-auto">
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="제목으로 검색"
+        className="bg-neutral-900 border border-neutral-700 rounded-md text-sm px-3 py-1.5 text-neutral-100 placeholder:text-neutral-500 w-full sm:w-56"
+      />
+      <button
+        type="submit"
+        className="shrink-0 bg-neutral-100 text-neutral-900 rounded-md text-sm px-3 py-1.5 font-medium hover:bg-white transition-colors"
+      >
+        검색
+      </button>
+    </form>
   );
 }

@@ -47,3 +47,38 @@ export async function searchMovies(query: string): Promise<TmdbSearchResult[]> {
     releaseDate: movie.release_date,
   }));
 }
+
+export type TmdbMovieDetails = {
+  releaseYear: string | null;
+  cast: string[];
+};
+
+const CAST_LIMIT = 5;
+
+// 상세 페이지 표시용(개봉 연도, 주요 출연진). 실패해도 페이지 전체가 깨지면 안 되므로 null을 반환한다.
+export async function getMovieDetails(tmdbId: number): Promise<TmdbMovieDetails | null> {
+  try {
+    const url = new URL(`${TMDB_BASE_URL}/movie/${tmdbId}`);
+    url.searchParams.set("api_key", getApiKey());
+    url.searchParams.set("language", "ko-KR");
+    url.searchParams.set("append_to_response", "credits");
+
+    const res = await fetch(url, { next: { revalidate: 60 * 60 * 24 } });
+    if (!res.ok) return null;
+
+    const data: {
+      release_date?: string;
+      credits?: { cast?: { name: string; order: number }[] };
+    } = await res.json();
+
+    const releaseYear = data.release_date ? data.release_date.slice(0, 4) : null;
+    const cast = [...(data.credits?.cast ?? [])]
+      .sort((a, b) => a.order - b.order)
+      .slice(0, CAST_LIMIT)
+      .map((member) => member.name);
+
+    return { releaseYear, cast };
+  } catch {
+    return null;
+  }
+}

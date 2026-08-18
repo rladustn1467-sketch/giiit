@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { TMDB_IMAGE_BASE_URL } from "@/lib/tmdb";
 
 type TmdbSearchResult = {
@@ -174,7 +175,12 @@ export default function NewMoviePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold">영화 등록</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold">영화 등록</h1>
+        <Link href="/movies" className="text-sm text-neutral-400 hover:text-neutral-200">
+          내 목록 보기 →
+        </Link>
+      </div>
       <input
         type="text"
         value={query}

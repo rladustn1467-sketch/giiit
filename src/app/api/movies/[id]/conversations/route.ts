@@ -62,8 +62,6 @@ export async function POST(
   const chatClient = getChatClient();
 
   if (content) {
-    await prisma.conversation.create({ data: { movieId, role: "user", content } });
-
     const history: ChatMessage[] = [
       ...existing.map((c) => ({
         role: c.role as ChatMessage["role"],
@@ -72,7 +70,10 @@ export async function POST(
       { role: "user", content },
     ];
 
+    // AI 응답 생성이 실패하면 사용자 메시지도 저장하지 않는다 (응답 없는 메시지가 남는 것을 방지).
     const reply = await chatClient.sendMessage(history, { tone, context: movieContext });
+
+    await prisma.conversation.create({ data: { movieId, role: "user", content } });
     const assistantMessage = await prisma.conversation.create({
       data: { movieId, role: "assistant", content: reply },
     });

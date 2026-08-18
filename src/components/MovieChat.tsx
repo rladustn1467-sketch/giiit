@@ -1,6 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import type { Components } from "react-markdown";
+
+// AI 응답에 섞여 나오는 <u>, <br> 같은 원시 HTML 태그도 렌더링하되,
+// rehype-raw가 통과시키는 태그는 rehype-sanitize로 안전한 서식용 태그만 허용한다.
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), "u"],
+};
 
 type ChatTone = "normal" | "friendly" | "critic";
 
@@ -8,6 +20,43 @@ type Message = {
   id: number;
   role: string;
   content: string;
+};
+
+const MARKDOWN_COMPONENTS: Components = {
+  p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+  strong: ({ children }) => <strong className="font-semibold text-neutral-50">{children}</strong>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  u: ({ children }) => <u className="underline">{children}</u>,
+  h1: ({ children }) => <h1 className="text-base font-semibold mt-3 mb-1.5 first:mt-0">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-base font-semibold mt-3 mb-1.5 first:mt-0">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-sm font-semibold mt-2.5 mb-1 first:mt-0">{children}</h3>,
+  ul: ({ children }) => <ul className="list-disc pl-5 mb-2 space-y-0.5">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-5 mb-2 space-y-0.5">{children}</ol>,
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  a: ({ children, href }) => (
+    <a href={href} target="_blank" rel="noreferrer" className="underline text-neutral-300 hover:text-neutral-100">
+      {children}
+    </a>
+  ),
+  hr: () => <hr className="border-neutral-700 my-3" />,
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-2 border-neutral-600 pl-2.5 text-neutral-400 my-2">{children}</blockquote>
+  ),
+  code: ({ children }) => (
+    <code className="bg-neutral-900 rounded px-1 py-0.5 text-xs">{children}</code>
+  ),
+  pre: ({ children }) => (
+    <pre className="bg-neutral-900 rounded-md p-2.5 overflow-x-auto text-xs mb-2">{children}</pre>
+  ),
+  table: ({ children }) => (
+    <div className="overflow-x-auto mb-2">
+      <table className="border-collapse text-xs">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => (
+    <th className="border border-neutral-700 px-2 py-1 text-left bg-neutral-900 font-medium">{children}</th>
+  ),
+  td: ({ children }) => <td className="border border-neutral-700 px-2 py-1 align-top">{children}</td>,
 };
 
 const TONE_OPTIONS: { value: ChatTone; label: string }[] = [
@@ -124,18 +173,29 @@ export default function MovieChat({ movieId }: { movieId: number }) {
           <p className="text-sm text-neutral-500">AI가 대화를 준비하고 있어요...</p>
         )}
 
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
-              message.role === "assistant"
-                ? "self-start bg-neutral-800 text-neutral-100"
-                : "self-end bg-neutral-100 text-neutral-900"
-            }`}
-          >
-            {message.content}
-          </div>
-        ))}
+        {messages.map((message) =>
+          message.role === "assistant" ? (
+            <div
+              key={message.id}
+              className="max-w-[85%] self-start rounded-lg bg-neutral-800 px-3 py-2 text-sm text-neutral-100"
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+                components={MARKDOWN_COMPONENTS}
+              >
+                {message.content}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <div
+              key={message.id}
+              className="max-w-[85%] self-end rounded-lg bg-neutral-100 px-3 py-2 text-sm text-neutral-900 whitespace-pre-wrap"
+            >
+              {message.content}
+            </div>
+          )
+        )}
 
         {sending && (
           <p className="self-start text-sm text-neutral-500">AI가 답변을 준비 중이에요...</p>
