@@ -76,3 +76,20 @@ model FolderMovie {
   @@id([folderId, movieId])
   @@map("folder_movies")
 }
+
+// "다시 추천받기"를 누를 때마다 이 유저의 기존 행을 모두 지우고 새로 채운다.
+// 항상 테이블 전체가 "현재 추천 목록" 한 벌이므로 새로고침 시 그대로 재조회해서 보여줄 수 있다.
+model Recommendation {
+  id                 Int      @id @default(autoincrement())
+  userId             Int      @default(1) @map("user_id")
+  tmdbId             Int      @map("tmdb_id")
+  title              String
+  releaseYear        String?  @map("release_year")
+  overview           String
+  posterPath         String?  @map("poster_path")
+  reason             String
+  watchProvidersJson String   @map("watch_providers_json")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@map("recommendations")
+}

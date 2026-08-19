@@ -6,14 +6,27 @@ import SortControl from "@/components/SortControl";
 import SearchControl from "@/components/SearchControl";
 import { parseKeywordSummary } from "@/lib/summary";
 
-const SORT_FIELDS = ["watchedDate", "rating", "title"] as const;
-type SortField = (typeof SORT_FIELDS)[number];
+const SORT_OPTIONS = ["watchedDate", "ratingAsc", "ratingDesc", "title"] as const;
+type SortOption = (typeof SORT_OPTIONS)[number];
 
-function parseSort(sort: string | undefined): Prisma.MovieOrderByWithRelationInput {
-  const field: SortField = SORT_FIELDS.includes(sort as SortField)
-    ? (sort as SortField)
+function parseSort(
+  sort: string | undefined
+): Prisma.MovieOrderByWithRelationInput[] {
+  const option: SortOption = SORT_OPTIONS.includes(sort as SortOption)
+    ? (sort as SortOption)
     : "watchedDate";
-  return { [field]: "desc" };
+
+  switch (option) {
+    case "ratingAsc":
+      return [{ rating: "asc" }, { createdAt: "desc" }];
+    case "ratingDesc":
+      return [{ rating: "desc" }, { createdAt: "desc" }];
+    case "title":
+      return [{ title: "desc" }];
+    case "watchedDate":
+    default:
+      return [{ watchedDate: "desc" }];
+  }
 }
 
 export default async function MovieListPage({

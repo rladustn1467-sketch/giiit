@@ -47,20 +47,27 @@ export default function SearchControl({ targetPath }: { targetPath?: string } = 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full sm:w-auto">
-      <input
-        type="text"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
-        placeholder="제목으로 검색"
-        className="bg-neutral-900 border border-neutral-700 rounded-md text-sm px-3 py-1.5 text-neutral-100 placeholder:text-neutral-500 w-full sm:w-56"
-      />
-      <button
-        type="submit"
-        className="shrink-0 bg-neutral-100 text-neutral-900 rounded-md text-sm px-3 py-1.5 font-medium hover:bg-white transition-colors"
-      >
-        검색
-      </button>
+    <form onSubmit={handleSubmit} className="w-full sm:w-auto">
+      <div className="relative w-full sm:w-56">
+        <input
+          type="text"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder="제목으로 검색"
+          className="bg-neutral-900 border border-neutral-700 rounded-md text-sm pl-3 pr-9 py-1.5 text-neutral-100 placeholder:text-neutral-500 w-full"
+        />
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </div>
     </form>
   );
 }

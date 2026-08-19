@@ -1,22 +1,24 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 const SORT_OPTIONS = [
   { value: "watchedDate", label: "감상일순" },
-  { value: "rating", label: "평점순" },
+  { value: "ratingAsc", label: "평점 낮은순" },
+  { value: "ratingDesc", label: "평점 높은순" },
   { value: "title", label: "제목순" },
 ] as const;
 
 export default function SortControl() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentSort = searchParams.get("sort") ?? "watchedDate";
 
   function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", event.target.value);
-    router.push(`/?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   return (
