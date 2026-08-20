@@ -75,7 +75,9 @@ export default function RecommendationCard({
             </button>
           )}
         </div>
-        <p className="text-sm text-[#333] border-t border-neutral-800 pt-1.5">💡 {reason}</p>
+        <p className="text-sm text-[#333] border-t border-neutral-800 pt-1.5">
+          💡 <span className="text-sm font-bold text-neutral-500 align-middle">AI 추천 이유</span> {reason}
+        </p>
 
         {watchProviders.length > 0 && (
           <div className="border-t border-neutral-800 pt-1.5 flex flex-col gap-1 mt-auto">
