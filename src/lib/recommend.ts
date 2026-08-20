@@ -15,6 +15,12 @@ export const REASON_BASIS_LABELS: Record<ReasonBasis, string> = {
   genre: "장르 유사",
 };
 
+export const REASON_BASIS_SENTENCES: Record<ReasonBasis, string> = {
+  review: "감상평 기반으로 추천되었습니다.",
+  chat: "챗봇 기반으로 추천되었습니다.",
+  genre: "장르 유사로 추천되었습니다.",
+};
+
 export type RecommendationCard = {
   tmdbId: number;
   title: string;

@@ -46,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 href="/recommend"
                 className="text-sm text-neutral-300 hover:text-neutral-100 transition-colors"
               >
-                추천
+                AI 맞춤 영화 추천
               </Link>
               <Link
                 href="/movies/new"

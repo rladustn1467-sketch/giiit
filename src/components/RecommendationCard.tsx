@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { TMDB_IMAGE_BASE_URL, TMDB_LOGO_BASE_URL } from "@/lib/tmdb";
-import { REASON_BASIS_LABELS, type ReasonBasis } from "@/lib/recommend";
+import { REASON_BASIS_SENTENCES, type ReasonBasis } from "@/lib/recommend";
 
 type WatchProvider = {
   providerId: number;
@@ -78,9 +78,11 @@ export default function RecommendationCard({
             </button>
           )}
         </div>
-        <p className="text-sm text-[#333] border-t border-neutral-800 pt-1.5">
-          💡 <span className="font-bold align-middle">[{REASON_BASIS_LABELS[reasonBasis]}]</span> {reason}
-        </p>
+        <div className="text-sm text-[#333] border-t border-neutral-800 pt-1.5 flex flex-col gap-1">
+          <p>💡 AI 추천 이유</p>
+          <p className="font-bold">{REASON_BASIS_SENTENCES[reasonBasis]}</p>
+          <p>{reason}</p>
+        </div>
 
         {watchProviders.length > 0 && (
           <div className="border-t border-neutral-800 pt-1.5 flex flex-col gap-1 mt-auto">
