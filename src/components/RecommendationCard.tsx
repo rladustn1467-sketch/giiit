@@ -62,7 +62,7 @@ export default function RecommendationCard({
           )}
         </p>
         <div>
-          <p className={`text-sm text-[#333] ${expanded ? "" : "line-clamp-2"}`}>
+          <p className={expanded ? "text-sm text-[#333]" : "text-sm text-[#333] line-clamp-2"}>
             {overview || "줄거리 정보가 없습니다."}
           </p>
           {canExpand && (
