@@ -32,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
         <header className="border-b border-neutral-800 sticky top-0 bg-neutral-950/90 backdrop-blur z-10">
           <nav className="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
-            <Link href="/" className="font-semibold tracking-tight">
+            <Link href="/" className="font-semibold tracking-tight text-neutral-100">
               🎬 영화 감상 기록
             </Link>
             <div className="flex items-center gap-4">
