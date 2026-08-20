@@ -37,7 +37,7 @@ export default function RecommendationCard({
 
   return (
     <div className="flex gap-4 rounded-lg overflow-hidden border border-neutral-800 p-3">
-      <div className="relative w-20 sm:w-24 shrink-0 aspect-[2/3] bg-neutral-900 rounded-md overflow-hidden">
+      <div className="relative w-[116px] sm:w-[139px] shrink-0 self-start aspect-[2/3] bg-neutral-900 rounded-md overflow-hidden">
         {posterPath ? (
           <Image
             src={`${TMDB_IMAGE_BASE_URL}${posterPath}`}
