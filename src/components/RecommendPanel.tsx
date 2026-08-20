@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import RecommendationCard from "./RecommendationCard";
+import type { ReasonBasis } from "@/lib/recommend";
 
 type WatchProvider = {
   providerId: number;
@@ -16,6 +17,7 @@ type Recommendation = {
   overview: string;
   posterPath: string | null;
   reason: string;
+  reasonBasis: ReasonBasis;
   genres: string[];
   watchProviders: WatchProvider[];
 };
@@ -61,10 +63,10 @@ export default function RecommendPanel({ initialRecommendations }: RecommendPane
             : "추천받기"}
       </button>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       {loading ? (
-        <p className="py-20 text-center text-neutral-400">
+        <p className="py-20 text-center text-neutral-600">
           취향을 분석해서 추천을 준비하고 있어요...
         </p>
       ) : recommendations.length > 0 ? (
@@ -74,7 +76,7 @@ export default function RecommendPanel({ initialRecommendations }: RecommendPane
           ))}
         </div>
       ) : !error ? (
-        <p className="py-20 text-center text-neutral-400">
+        <p className="py-20 text-center text-neutral-600">
           아직 추천받은 영화가 없어요. 위 버튼을 눌러 추천을 받아보세요.
         </p>
       ) : null}

@@ -34,7 +34,7 @@ export default async function MovieDetailPage({
             className="rounded-md object-cover shrink-0"
           />
         ) : (
-          <div className="w-[140px] h-[210px] bg-neutral-900 rounded-md flex items-center justify-center text-xs text-neutral-600 shrink-0">
+          <div className="w-[140px] h-[210px] bg-neutral-900 rounded-md flex items-center justify-center text-xs text-neutral-500 shrink-0">
             포스터 없음
           </div>
         )}
@@ -44,35 +44,35 @@ export default async function MovieDetailPage({
             <h1 className="text-xl font-semibold">
               {movie.title}
               {tmdbDetails?.releaseYear && (
-                <span className="text-neutral-500 font-normal"> ({tmdbDetails.releaseYear})</span>
+                <span className="text-neutral-600 font-normal"> ({tmdbDetails.releaseYear})</span>
               )}
             </h1>
             <DeleteMovieButton movieId={movie.id} />
           </div>
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm text-neutral-600">
             감상일 {movie.watchedDate.toLocaleDateString("ko-KR")}
             {movie.rating != null && ` · ⭐ ${movie.rating}`}
           </p>
           {tmdbDetails && tmdbDetails.cast.length > 0 && (
-            <p className="text-sm text-neutral-400">출연: {tmdbDetails.cast.join(", ")}</p>
+            <p className="text-sm text-neutral-600">출연: {tmdbDetails.cast.join(", ")}</p>
           )}
           {movie.overview && (
-            <p className="text-sm text-neutral-400 mt-2">{movie.overview}</p>
+            <p className="text-sm text-neutral-600 mt-2">{movie.overview}</p>
           )}
         </div>
       </div>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-semibold text-neutral-300">감상평</h2>
+        <h2 className="text-sm font-semibold text-neutral-700">감상평</h2>
         <ReviewEditor movieId={movie.id} initialRating={movie.rating} initialReview={movie.review} />
       </section>
 
       <section className="flex flex-col gap-3 border-t border-neutral-800 pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-neutral-300">AI 대화</h2>
+          <h2 className="text-sm font-semibold text-neutral-700">AI 대화</h2>
           <div className="flex items-center gap-3">
             <RegenerateSummaryButton movieId={movie.id} />
-            <Link href={`/movies/${movie.id}/summary`} className="text-xs text-neutral-400 underline">
+            <Link href={`/movies/${movie.id}/summary`} className="text-xs text-neutral-600 underline">
               대화 요약 보기
             </Link>
           </div>

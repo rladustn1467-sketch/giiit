@@ -14,7 +14,7 @@ export default async function RecommendPage() {
     return (
       <div className="flex flex-col gap-4">
         <h1 className="text-lg font-semibold">AI 추천</h1>
-        <p className="py-20 text-center text-neutral-400">
+        <p className="py-20 text-center text-neutral-600">
           더 많은 영화를 기록해주세요. (최소 {MIN_MOVIES}편 필요, 현재 {movieCount}편)
         </p>
       </div>

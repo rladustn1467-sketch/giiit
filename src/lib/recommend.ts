@@ -1,5 +1,20 @@
 import type { WatchProvider } from "./tmdb";
 
+// 추천 이유가 실제로 어디서 왔는지: 사용자가 남긴 감상평 / AI 챗봇과의 대화 요약 / 단순 장르·성향 유사성.
+export type ReasonBasis = "review" | "chat" | "genre";
+
+const REASON_BASIS_VALUES: ReasonBasis[] = ["review", "chat", "genre"];
+
+export function isReasonBasis(value: unknown): value is ReasonBasis {
+  return typeof value === "string" && (REASON_BASIS_VALUES as string[]).includes(value);
+}
+
+export const REASON_BASIS_LABELS: Record<ReasonBasis, string> = {
+  review: "감상평 기반",
+  chat: "챗봇 기반",
+  genre: "장르 유사",
+};
+
 export type RecommendationCard = {
   tmdbId: number;
   title: string;
@@ -7,6 +22,7 @@ export type RecommendationCard = {
   overview: string;
   posterPath: string | null;
   reason: string;
+  reasonBasis: ReasonBasis;
   genres: string[];
   watchProviders: WatchProvider[];
 };
@@ -18,6 +34,7 @@ type RecommendationRow = {
   overview: string;
   posterPath: string | null;
   reason: string;
+  reasonBasis: string | null;
   genresJson: string | null;
   watchProvidersJson: string;
 };
@@ -40,6 +57,7 @@ export function mapRecommendationRow(row: RecommendationRow): RecommendationCard
     overview: row.overview,
     posterPath: row.posterPath,
     reason: row.reason,
+    reasonBasis: isReasonBasis(row.reasonBasis) ? row.reasonBasis : "genre",
     genres: parseJsonArray<string>(row.genresJson),
     watchProviders: parseJsonArray<WatchProvider>(row.watchProvidersJson),
   };

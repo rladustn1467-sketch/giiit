@@ -30,9 +30,9 @@ export default async function LibraryPage() {
       </div>
 
       {totalMovies === 0 ? (
-        <p className="py-20 text-center text-neutral-400">아직 등록한 영화가 없어요.</p>
+        <p className="py-20 text-center text-neutral-600">아직 등록한 영화가 없어요.</p>
       ) : folders.length === 0 ? (
-        <p className="py-20 text-center text-neutral-400">
+        <p className="py-20 text-center text-neutral-600">
           아직 정리된 라이브러리가 없어요. &quot;라이브러리 정리하기&quot;를 눌러 영화를 폴더로
           분류해보세요.
         </p>
@@ -40,9 +40,9 @@ export default async function LibraryPage() {
         <div className="flex flex-col gap-8">
           {folders.map((folder) => (
             <section key={folder.id} className="flex flex-col gap-3">
-              <h2 className="text-sm font-semibold text-neutral-300">
+              <h2 className="text-sm font-semibold text-neutral-700">
                 {folder.name}{" "}
-                <span className="font-normal text-neutral-500">
+                <span className="font-normal text-neutral-600">
                   ({folder.folderMovies.length})
                 </span>
               </h2>
@@ -64,7 +64,7 @@ export default async function LibraryPage() {
             </section>
           ))}
           {unclassifiedCount > 0 && (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-neutral-600">
               특별히 두드러지지 않는 {unclassifiedCount}편은 폴더에 담기지 않았어요. 홈 화면의
               &quot;내 영화 기록&quot;에서는 계속 볼 수 있어요.
             </p>

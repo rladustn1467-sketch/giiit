@@ -34,14 +34,14 @@ export default function MovieCard({
             className="object-cover group-hover:opacity-90 transition-opacity"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-neutral-600 text-sm">
+          <div className="flex items-center justify-center h-full text-neutral-500 text-sm">
             포스터 없음
           </div>
         )}
       </div>
       <div className="p-2">
         <p className="text-sm font-medium truncate">{title}</p>
-        <div className="flex items-center justify-between text-xs text-neutral-400 mt-1">
+        <div className="flex items-center justify-between text-xs text-neutral-600 mt-1">
           <span>{watchedDate.toLocaleDateString("ko-KR")}</span>
           {rating != null && <span>⭐ {rating}</span>}
         </div>

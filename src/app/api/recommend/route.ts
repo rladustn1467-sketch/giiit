@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getChatClient } from "@/lib/ai/chatClient";
 import { searchMovies, getWatchProviders, getGenres } from "@/lib/tmdb";
-import type { RecommendationCard } from "@/lib/recommend";
+import { isReasonBasis, type RecommendationCard, type ReasonBasis } from "@/lib/recommend";
 
 // Ollama 응답이 느릴 수 있어 서버리스 함수 제한 시간을 최대로 요청한다 (Vercel Hobby 상한 60초).
 export const maxDuration = 60;
@@ -40,7 +40,13 @@ function buildTasteProfileText(movie: MovieForTaste): string {
   return lines.join("\n");
 }
 
-type AiRecommendation = { title: string; originalTitle: string; year: string; reason: string };
+type AiRecommendation = {
+  title: string;
+  originalTitle: string;
+  year: string;
+  reasonBasis: ReasonBasis;
+  reason: string;
+};
 
 function extractJsonBlock(raw: string): string {
   const start = raw.indexOf("{");
@@ -69,7 +75,9 @@ function parseRecommendResponse(raw: string): AiRecommendation[] {
       const originalTitle = String((r as { originalTitle?: unknown }).originalTitle ?? "").trim();
       const year = String((r as { year?: unknown }).year ?? "").trim();
       const reason = String((r as { reason?: unknown }).reason ?? "").trim();
-      return { title, originalTitle, year, reason };
+      const rawBasis = (r as { reasonBasis?: unknown }).reasonBasis;
+      const reasonBasis: ReasonBasis = isReasonBasis(rawBasis) ? rawBasis : "genre";
+      return { title, originalTitle, year, reasonBasis, reason };
     })
     .filter((r): r is AiRecommendation => r !== null);
 }
@@ -80,6 +88,7 @@ type ResolvedCandidate = {
   releaseYear: string | null;
   overview: string;
   posterPath: string | null;
+  reasonBasis: ReasonBasis;
   reason: string;
 };
 
@@ -110,6 +119,7 @@ async function resolveRecommendation(
       releaseYear: match.releaseDate ? match.releaseDate.slice(0, 4) : null,
       overview: match.overview,
       posterPath: match.posterPath,
+      reasonBasis: rec.reasonBasis,
       reason: rec.reason,
     };
   } catch {
@@ -144,11 +154,16 @@ ${profiles.join("\n\n")}
 2. 위 목록에 있는 영화는 절대 다시 추천하지 마세요.
 3. 반드시 실제로 개봉된 영화만 추천하세요. 존재하지 않는 제목을 지어내면 절대 안 됩니다. 확신이 서지 않는 제목은 포함하지 마세요.
 4. 정확히 ${REQUEST_COUNT}편을 추천하세요.
-5. 각 영화마다 사용자의 취향과 연결지어 추천 이유를 1문장으로 작성하세요.
+5. reason은 추천하는 영화 자체의 줄거리를 요약하면 안 됩니다. 대신 위 목록 중 어떤 영화의 "감상평" 또는 "요약" 항목의 어떤 부분이 이 추천의 근거가 됐는지, 그 영화 제목을 언급하며 구체적으로 설명하세요.
+6. 각 추천마다 근거가 다음 중 무엇인지 reasonBasis 필드에 정확히 밝히세요.
+   - "review": 위 목록의 특정 영화에 사용자가 직접 남긴 "감상평:" 내용이 근거일 때
+   - "chat": 위 목록의 특정 영화에 대해 AI 챗봇과 나눈 "요약:" 내용이 근거일 때
+   - "genre": 특정 감상평/요약을 근거로 들 수 없고, 장르나 전반적인 취향 성향의 유사성만으로 추천할 때 (이때는 reason에서도 특정 영화를 지목하지 말고 장르/성향 유사성을 설명하세요)
+7. reason에는 마크다운, 별표(**) 등 서식 문자를 절대 포함하지 말고 순수 텍스트 한 문장으로만 작성하세요.
 
 [출력 형식]
-아래 JSON 형식으로만 응답하세요. originalTitle은 영화의 원제(영어 등 원어 제목)입니다. 설명, 마크다운 코드블록, 다른 텍스트는 절대 포함하지 마세요.
-{"recommendations":[{"title":"한글 제목","originalTitle":"원제","year":"개봉연도(YYYY, 모르면 빈 문자열)","reason":"추천 이유 한 문장"}]}`;
+아래 JSON 형식으로만 응답하세요. originalTitle은 영화의 원제(영어 등 원어 제목)이고, reasonBasis는 반드시 "review", "chat", "genre" 중 하나입니다. 설명, 마크다운 코드블록, 다른 텍스트는 절대 포함하지 마세요.
+{"recommendations":[{"title":"한글 제목","originalTitle":"원제","year":"개봉연도(YYYY, 모르면 빈 문자열)","reasonBasis":"review|chat|genre","reason":"추천 이유 한 문장"}]}`;
 
   const chatClient = getChatClient();
   const excludeTmdbIds = new Set(movies.map((m) => m.tmdbId));
@@ -203,6 +218,7 @@ ${profiles.join("\n\n")}
         overview: r.overview,
         posterPath: r.posterPath,
         reason: r.reason,
+        reasonBasis: r.reasonBasis,
         genresJson: JSON.stringify(r.genres),
         watchProvidersJson: JSON.stringify(r.watchProviders),
       })),

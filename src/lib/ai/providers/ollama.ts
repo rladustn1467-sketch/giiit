@@ -1,4 +1,11 @@
+import { Agent, fetch as undiciFetch } from "undici";
 import type { ChatClient, ChatMessage, ChatTone } from "../types";
+
+// 로컬 CPU 추론은 몇 분씩 걸릴 수 있어, fetch의 기본 5분 headers 타임아웃보다 넉넉하게 잡아둔다.
+// Node 전역 fetch는 자체 내장 undici를 쓰기 때문에 npm undici의 Agent를 dispatcher로 못 받아들여서
+// (버전 불일치로 "invalid onRequestStart method" 에러 발생), undici가 제공하는 fetch를 직접 사용한다.
+// 프로덕션(Groq)은 훨씬 빨라 이 타임아웃에 걸릴 일이 없다.
+const OLLAMA_DISPATCHER = new Agent({ headersTimeout: 15 * 60 * 1000 });
 
 // 톤 3가지: 기본 / 친구처럼 편하게 / 평론가 스타일
 const TONE_SYSTEM_PROMPTS: Record<ChatTone, string> = {
@@ -28,7 +35,7 @@ export class OllamaChatClient implements ChatClient {
       : TONE_SYSTEM_PROMPTS[tone];
     const systemMessage: ChatMessage = { role: "system", content: systemContent };
 
-    const res = await fetch(`${this.baseUrl}/api/chat`, {
+    const res = await undiciFetch(`${this.baseUrl}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -40,13 +47,14 @@ export class OllamaChatClient implements ChatClient {
           ? { options: { temperature: options.temperature } }
           : {}),
       }),
+      dispatcher: OLLAMA_DISPATCHER,
     });
 
     if (!res.ok) {
       throw new Error(`Ollama request failed: ${res.status} ${await res.text()}`);
     }
 
-    const data: OllamaChatResponse = await res.json();
+    const data = (await res.json()) as OllamaChatResponse;
     return data.message.content;
   }
 }

@@ -91,7 +91,7 @@ export default function NewMoviePage() {
         <button
           type="button"
           onClick={() => setSelected(null)}
-          className="text-sm text-neutral-400 self-start"
+          className="text-sm text-neutral-600 self-start"
         >
           ← 다시 검색
         </button>
@@ -106,14 +106,14 @@ export default function NewMoviePage() {
               className="rounded-md object-cover"
             />
           ) : (
-            <div className="w-[100px] h-[150px] bg-neutral-900 rounded-md flex items-center justify-center text-xs text-neutral-600">
+            <div className="w-[100px] h-[150px] bg-neutral-900 rounded-md flex items-center justify-center text-xs text-neutral-500">
               포스터 없음
             </div>
           )}
           <div>
             <h2 className="font-semibold">{selected.title}</h2>
-            <p className="text-xs text-neutral-500 mt-1">{selected.releaseDate}</p>
-            <p className="text-sm text-neutral-400 mt-2 line-clamp-4">
+            <p className="text-xs text-neutral-600 mt-1">{selected.releaseDate}</p>
+            <p className="text-sm text-neutral-600 mt-2 line-clamp-4">
               {selected.overview || "줄거리 정보가 없습니다."}
             </p>
           </div>
@@ -155,7 +155,7 @@ export default function NewMoviePage() {
             />
           </label>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             type="submit"
@@ -177,7 +177,7 @@ export default function NewMoviePage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">영화 등록</h1>
-        <Link href="/movies" className="text-sm text-neutral-400 hover:text-neutral-200">
+        <Link href="/movies" className="text-sm text-neutral-600 hover:text-neutral-800">
           내 목록 보기 →
         </Link>
       </div>
@@ -190,7 +190,7 @@ export default function NewMoviePage() {
         className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-neutral-100 placeholder:text-neutral-600"
       />
 
-      {searching && <p className="text-sm text-neutral-500">검색 중...</p>}
+      {searching && <p className="text-sm text-neutral-600">검색 중...</p>}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {results.map((result) => (
@@ -210,14 +210,14 @@ export default function NewMoviePage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-neutral-600 text-xs">
+                <div className="flex items-center justify-center h-full text-neutral-500 text-xs">
                   포스터 없음
                 </div>
               )}
             </div>
             <div className="p-2">
               <p className="text-sm font-medium truncate">{result.title}</p>
-              <p className="text-xs text-neutral-500">{result.releaseDate}</p>
+              <p className="text-xs text-neutral-600">{result.releaseDate}</p>
             </div>
           </button>
         ))}

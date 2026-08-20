@@ -25,7 +25,7 @@ export default async function Home() {
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
           내가 본 영화, 기록하고 다시 꺼내보기
         </h1>
-        <p className="text-neutral-400 max-w-md">
+        <p className="text-neutral-600 max-w-md">
           감상일, 평점, 감상평을 남기고 AI가 만들어주는 요약과 키워드로
           나만의 영화 아카이브를 만들어보세요.
         </p>
@@ -38,7 +38,7 @@ export default async function Home() {
           </Link>
           <Link
             href="/movies"
-            className="text-sm px-4 py-2 rounded-md border border-neutral-700 text-neutral-300 hover:text-neutral-100 hover:border-neutral-500 transition-colors"
+            className="text-sm px-4 py-2 rounded-md border border-neutral-700 text-neutral-600 hover:text-neutral-900 hover:border-neutral-500 transition-colors"
           >
             내 목록 보기
           </Link>
@@ -50,16 +50,16 @@ export default async function Home() {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-neutral-300">최근 등록한 영화</h2>
+          <h2 className="text-sm font-semibold text-neutral-700">최근 등록한 영화</h2>
           {recentMovies.length > 0 && (
-            <Link href="/movies" className="text-xs text-neutral-500 hover:text-neutral-300">
+            <Link href="/movies" className="text-xs text-neutral-600 hover:text-neutral-800">
               전체 보기 →
             </Link>
           )}
         </div>
 
         {recentMovies.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-neutral-400 border border-dashed border-neutral-800 rounded-lg">
+          <div className="flex flex-col items-center gap-3 py-16 text-neutral-600 border border-dashed border-neutral-800 rounded-lg">
             <p>아직 등록한 영화가 없어요.</p>
             <Link
               href="/movies/new"

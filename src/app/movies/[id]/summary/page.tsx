@@ -23,7 +23,7 @@ export default async function MovieSummaryPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <Link href={`/movies/${movieId}`} className="text-sm text-neutral-400 self-start">
+      <Link href={`/movies/${movieId}`} className="text-sm text-neutral-600 self-start">
         ← {movie.title}로 돌아가기
       </Link>
 

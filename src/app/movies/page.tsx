@@ -57,7 +57,7 @@ export default async function MovieListPage({
       </div>
 
       {movies.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-20 text-neutral-400">
+        <div className="flex flex-col items-center gap-3 py-20 text-neutral-600">
           {q ? (
             <p>&quot;{q}&quot;와(과) 일치하는 영화가 없어요.</p>
           ) : (

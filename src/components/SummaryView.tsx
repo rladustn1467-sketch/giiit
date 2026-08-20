@@ -41,15 +41,15 @@ export default function SummaryView({
       {summary ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm whitespace-pre-wrap">{summary.summaryText}</p>
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-600">
             {new Date(summary.createdAt).toLocaleString("ko-KR")}에 생성됨
           </p>
         </div>
       ) : (
-        <p className="text-sm text-neutral-500">아직 요약이 없어요.</p>
+        <p className="text-sm text-neutral-600">아직 요약이 없어요.</p>
       )}
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button
         type="button"

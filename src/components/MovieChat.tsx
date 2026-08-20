@@ -153,7 +153,7 @@ export default function MovieChat({ movieId }: { movieId: number }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <label className="flex items-center gap-1.5 self-end text-sm text-neutral-500">
+      <label className="flex items-center gap-1.5 self-end text-sm text-neutral-600">
         대화 스타일
         <select
           value={tone}
@@ -170,7 +170,7 @@ export default function MovieChat({ movieId }: { movieId: number }) {
 
       <div className="flex flex-col gap-2 min-h-[120px]">
         {loading && (
-          <p className="text-sm text-neutral-500">AI가 대화를 준비하고 있어요...</p>
+          <p className="text-sm text-neutral-600">AI가 대화를 준비하고 있어요...</p>
         )}
 
         {messages.map((message) =>
@@ -198,13 +198,13 @@ export default function MovieChat({ movieId }: { movieId: number }) {
         )}
 
         {sending && (
-          <p className="self-start text-sm text-neutral-500">AI가 답변을 준비 중이에요...</p>
+          <p className="self-start text-sm text-neutral-600">AI가 답변을 준비 중이에요...</p>
         )}
 
         <div ref={bottomRef} />
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       <div className="flex gap-2">
         <input

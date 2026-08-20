@@ -32,7 +32,7 @@ export default function OrganizeLibraryButton() {
       >
         {loading ? "정리하는 중... (최대 1분 정도 걸려요)" : "라이브러리 정리하기"}
       </button>
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-600">{error}</span>}
     </div>
   );
 }

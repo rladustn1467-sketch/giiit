@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { TMDB_IMAGE_BASE_URL, TMDB_LOGO_BASE_URL } from "@/lib/tmdb";
+import { REASON_BASIS_LABELS, type ReasonBasis } from "@/lib/recommend";
 
 type WatchProvider = {
   providerId: number;
@@ -16,6 +17,7 @@ type RecommendationCardProps = {
   overview: string;
   posterPath: string | null;
   reason: string;
+  reasonBasis: ReasonBasis;
   genres: string[];
   watchProviders: WatchProvider[];
 };
@@ -29,6 +31,7 @@ export default function RecommendationCard({
   overview,
   posterPath,
   reason,
+  reasonBasis,
   genres,
   watchProviders,
 }: RecommendationCardProps) {
@@ -48,7 +51,7 @@ export default function RecommendationCard({
             className="object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-neutral-600 text-xs text-center px-1">
+          <div className="flex items-center justify-center h-full text-neutral-500 text-xs text-center px-1">
             포스터 없음
           </div>
         )}
@@ -56,9 +59,9 @@ export default function RecommendationCard({
       <div className="flex flex-1 min-w-0 flex-col gap-1.5">
         <p className="text-sm font-medium truncate">
           {title}
-          {releaseYear && <span className="text-neutral-500"> ({releaseYear})</span>}
+          {releaseYear && <span className="text-neutral-600"> ({releaseYear})</span>}
           {genres.length > 0 && (
-            <span className="text-neutral-500"> · {genres.join(", ")}</span>
+            <span className="text-neutral-600"> · {genres.join(", ")}</span>
           )}
         </p>
         <div>
@@ -69,14 +72,14 @@ export default function RecommendationCard({
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
-              className="text-[10px] text-neutral-500 hover:text-neutral-300 mt-0.5"
+              className="text-[10px] text-neutral-600 hover:text-neutral-800 mt-0.5"
             >
               {expanded ? "접기" : "더보기"}
             </button>
           )}
         </div>
         <p className="text-sm text-[#333] border-t border-neutral-800 pt-1.5">
-          💡 <span className="text-sm font-bold text-neutral-500 align-middle">AI 추천 이유</span> {reason}
+          💡 <span className="font-bold align-middle">[{REASON_BASIS_LABELS[reasonBasis]}]</span> {reason}
         </p>
 
         {watchProviders.length > 0 && (

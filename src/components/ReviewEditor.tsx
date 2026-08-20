@@ -76,7 +76,7 @@ export default function ReviewEditor({ movieId, initialRating, initialReview }: 
           />
         </label>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-2">
           <button
@@ -91,7 +91,7 @@ export default function ReviewEditor({ movieId, initialRating, initialReview }: 
             type="button"
             onClick={() => setEditing(false)}
             disabled={submitting}
-            className="text-sm text-neutral-400 px-3 py-1.5 disabled:opacity-50"
+            className="text-sm text-neutral-600 px-3 py-1.5 disabled:opacity-50"
           >
             취소
           </button>
@@ -105,9 +105,9 @@ export default function ReviewEditor({ movieId, initialRating, initialReview }: 
       {initialReview ? (
         <p className="text-sm whitespace-pre-wrap">{initialReview}</p>
       ) : (
-        <p className="text-sm text-neutral-500">아직 감상평이 없어요.</p>
+        <p className="text-sm text-neutral-600">아직 감상평이 없어요.</p>
       )}
-      <button type="button" onClick={startEdit} className="text-xs text-neutral-400 underline">
+      <button type="button" onClick={startEdit} className="text-xs text-neutral-600 underline">
         {initialReview ? "수정하기" : "감상평 남기기"}
       </button>
     </div>
