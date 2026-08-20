@@ -84,6 +84,23 @@ export async function getMovieDetails(tmdbId: number): Promise<TmdbMovieDetails 
   }
 }
 
+// 장르 이름 목록. 영화 상세 조회(append_to_response 없이)만으로도 genres 필드가 기본 포함된다.
+export async function getGenres(tmdbId: number): Promise<string[]> {
+  try {
+    const url = new URL(`${TMDB_BASE_URL}/movie/${tmdbId}`);
+    url.searchParams.set("api_key", getApiKey());
+    url.searchParams.set("language", "ko-KR");
+
+    const res = await fetch(url, { next: { revalidate: 60 * 60 * 24 } });
+    if (!res.ok) return [];
+
+    const data: { genres?: { name: string }[] } = await res.json();
+    return (data.genres ?? []).map((g) => g.name);
+  } catch {
+    return [];
+  }
+}
+
 export type WatchProvider = {
   providerId: number;
   providerName: string;

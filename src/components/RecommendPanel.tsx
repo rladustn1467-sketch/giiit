@@ -16,6 +16,7 @@ type Recommendation = {
   overview: string;
   posterPath: string | null;
   reason: string;
+  genres: string[];
   watchProviders: WatchProvider[];
 };
 
@@ -67,7 +68,7 @@ export default function RecommendPanel({ initialRecommendations }: RecommendPane
           취향을 분석해서 추천을 준비하고 있어요...
         </p>
       ) : recommendations.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        <div className="flex flex-col gap-3">
           {recommendations.map((rec) => (
             <RecommendationCard key={rec.tmdbId} {...rec} />
           ))}

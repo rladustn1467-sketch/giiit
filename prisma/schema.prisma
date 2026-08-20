@@ -88,6 +88,7 @@ model Recommendation {
   overview           String
   posterPath         String?  @map("poster_path")
   reason             String
+  genresJson         String?  @map("genres_json")
   watchProvidersJson String   @map("watch_providers_json")
   createdAt          DateTime @default(now()) @map("created_at")
 

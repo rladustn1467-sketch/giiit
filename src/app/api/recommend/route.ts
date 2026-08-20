@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getChatClient } from "@/lib/ai/chatClient";
-import { searchMovies, getWatchProviders } from "@/lib/tmdb";
+import { searchMovies, getWatchProviders, getGenres } from "@/lib/tmdb";
 import type { RecommendationCard } from "@/lib/recommend";
 
 // Ollama 응답이 느릴 수 있어 서버리스 함수 제한 시간을 최대로 요청한다 (Vercel Hobby 상한 60초).
@@ -185,6 +185,7 @@ ${profiles.join("\n\n")}
   const recommendations: RecommendationCard[] = await Promise.all(
     collected.map(async (candidate) => ({
       ...candidate,
+      genres: await getGenres(candidate.tmdbId),
       watchProviders: await getWatchProviders(candidate.tmdbId),
     }))
   );
@@ -202,6 +203,7 @@ ${profiles.join("\n\n")}
         overview: r.overview,
         posterPath: r.posterPath,
         reason: r.reason,
+        genresJson: JSON.stringify(r.genres),
         watchProvidersJson: JSON.stringify(r.watchProviders),
       })),
     }),
