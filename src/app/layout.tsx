@@ -43,6 +43,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 라이브러리
               </Link>
               <Link
+                href="/taste"
+                className="text-sm text-neutral-300 hover:text-neutral-100 transition-colors"
+              >
+                취향 분석
+              </Link>
+              <Link
                 href="/recommend"
                 className="text-sm text-neutral-300 hover:text-neutral-100 transition-colors"
               >
